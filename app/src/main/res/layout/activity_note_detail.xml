@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:title="Chi tiết ghi chú"
+        app:titleTextColor="@android:color/white" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edtNoteTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhâp tiêu đề"
+        android:layout_marginBottom="20dp"
+        android:textSize="25sp"
+        android:layout_margin="15dp"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edtNoteContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập nội dung ghi chú..."
+        android:padding="12dp"
+        android:background="@drawable/bg_edittext"
+        android:minLines="5"
+        android:maxLines="10"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="#E4DBE7"
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"
+        android:layout_margin="15dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvReminderTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nhắc lúc: 12:00 | 20/09/2023"
+        android:textSize="20sp"
+        android:textColor="#646464"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"/>
+
+    <Switch
+        android:id="@+id/switchReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="Đặt nhắc nhở"
+        android:textSize="20sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSaveNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:paddingStart="40dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="40dp"
+        android:paddingBottom="15dp"
+        android:text="Lưu ghi chú"
+        android:textSize="25sp" />
+
+</com.google.android.material.circularreveal.CircularRevealLinearLayout>
