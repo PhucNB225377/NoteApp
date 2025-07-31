@@ -34,4 +34,25 @@ public interface NoteDao {
 
     @Query("SELECT * FROM note_table WHERE categoryId = :categoryId AND title LIKE '%' || :query || '%' ORDER BY position ASC")
     LiveData<List<Note>> searchNotesByCategory(int categoryId, String query);
+
+    @Query("SELECT * FROM note_table WHERE `check` = 1 ORDER BY position ASC")
+    LiveData<List<Note>> getAllCheckedNotes();
+
+    @Query("SELECT * FROM note_table WHERE `check` = 1 AND title LIKE '%' || :query || '%' ORDER BY position ASC")
+    LiveData<List<Note>> searchAllCheckedNotes(String query);
+
+    @Query("SELECT * FROM note_table WHERE `pin` = 1 ORDER BY position ASC")
+    LiveData<List<Note>> getAllPinedNotes();
+
+    @Query("SELECT * FROM note_table WHERE `pin` = 1 AND title LIKE '%' || :query || '%' ORDER BY position ASC")
+    LiveData<List<Note>> searchAllPinedNotes(String query);
+
+    @Query("SELECT * FROM note_table WHERE `check` = 0 ORDER BY position ASC")
+    LiveData<List<Note>> getAllUncheckedNotes();
+
+    @Query("SELECT * FROM note_table WHERE `check` = 0 AND title LIKE '%' || :query || '%' ORDER BY position ASC")
+    LiveData<List<Note>> searchAllUncheckedNotes(String query);
+
+    @Query("SELECT * FROM note_table WHERE categoryId = :categoryId AND `pin` = 1 ORDER BY position ASC")
+    LiveData<List<Note>> getPinnedNotesByCategory(int categoryId);
 }

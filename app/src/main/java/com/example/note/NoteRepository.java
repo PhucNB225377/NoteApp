@@ -43,4 +43,24 @@ public class NoteRepository {
     public LiveData<List<Note>> searchAllNotes(String query) { return noteDao.searchAllNotes(query); }
 
     public LiveData<List<Note>> searchNotesByCategory(int categoryId, String query) { return noteDao.searchNotesByCategory(categoryId, query); }
+
+    public LiveData<List<Note>> getAllCheckedNotes() {
+        return noteDao.getAllCheckedNotes();
+    }
+
+    public LiveData<List<Note>> searchAllCheckedNotes(String query) { return noteDao.searchAllCheckedNotes(query); }
+
+    public LiveData<List<Note>> getAllPinedNotes() {
+        return noteDao.getAllPinedNotes();
+    }
+
+    public LiveData<List<Note>> searchAllPinedNotes(String query) { return noteDao.searchAllPinedNotes(query); }
+
+    public LiveData<List<Note>> getAllUncheckedNotes() {
+        return noteDao.getAllUncheckedNotes();
+    }
+
+    public LiveData<List<Note>> searchAllUncheckedNotes(String query) { return noteDao.searchAllUncheckedNotes(query); }
+
+    public LiveData<List<Note>> getPinnedNotesByCategory(int categoryId) { return noteDao.getPinnedNotesByCategory(categoryId); }
 }

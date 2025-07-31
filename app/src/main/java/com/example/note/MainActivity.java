@@ -1,6 +1,7 @@
 package com.example.note;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -9,7 +10,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -81,6 +82,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        CardView cardView1 = findViewById(R.id.card1);
+        cardView1.setOnClickListener(v -> {
+            searchView.clearFocus();
+            Intent intent = new Intent(MainActivity.this, AllNotesActivity.class);
+            intent.putExtra("category_name", "Tất cả ghi chú");
+            startActivity(intent);
+        });
+
+        CardView cardView2 = findViewById(R.id.card2);
+        cardView2.setOnClickListener(v -> {
+            searchView.clearFocus();
+            Intent intent = new Intent(MainActivity.this, CheckedNotesActivity.class);
+            intent.putExtra("category_name", "Ghi chú đã hoàn thành");
+            startActivity(intent);
+        });
+
+        CardView cardView3 = findViewById(R.id.card3);
+        cardView3.setOnClickListener(v -> {
+            searchView.clearFocus();
+            Intent intent = new Intent(MainActivity.this, PinedNotesActivity.class);
+            intent.putExtra("category_name", "Ghi chú đã ghim");
+            startActivity(intent);
+        });
+
+        CardView cardView4 = findViewById(R.id.card4);
+        cardView4.setOnClickListener(v -> {
+            searchView.clearFocus();
+            Intent intent = new Intent(MainActivity.this, UncheckedNotesActivity.class);
+            intent.putExtra("category_name", "Ghi chú chưa hoàn thành");
+            startActivity(intent);
+        });
+
         FloatingActionButton buttonAddCategory = findViewById(R.id.addCategory);
         buttonAddCategory.setOnClickListener(v -> {
             searchView.clearFocus();
@@ -123,9 +157,6 @@ public class MainActivity extends AppCompatActivity {
                             if (dX < 0) {
                                 Paint paint = new Paint();
                                 paint.setColor(Color.RED);
-                                Drawable deleteIcon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_delete);
-                                assert deleteIcon != null;
-                                int iconMargin = (itemView.getHeight() - deleteIcon.getIntrinsicHeight()) / 2;
 
                                 RectF background = new RectF(
                                         itemView.getRight() + dX, itemView.getTop(),
@@ -133,19 +164,18 @@ public class MainActivity extends AppCompatActivity {
                                 );
                                 c.drawRect(background, paint);
 
-                                int iconTop = itemView.getTop() + iconMargin;
-                                int iconRight = itemView.getRight() - iconMargin;
-                                int iconLeft = itemView.getRight() - iconMargin - deleteIcon.getIntrinsicWidth();
-                                int iconBottom = iconTop + deleteIcon.getIntrinsicHeight();
-                                deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-                                deleteIcon.draw(c);
+                                paint.setColor(Color.WHITE);
+                                paint.setTextSize(40);
+                                paint.setTextAlign(Paint.Align.CENTER);
+
+                                float textX = itemView.getRight() - (itemView.getHeight() / 2f);
+                                float textY = itemView.getTop() + (itemView.getHeight() / 2f) - ((paint.descent() + paint.ascent()) / 2);
+
+                                c.drawText("xóa", textX, textY, paint);
 
                             } else if (dX > 0) {
                                 Paint paint = new Paint();
                                 paint.setColor(Color.GRAY);
-                                Drawable editIcon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_edit);
-                                assert editIcon != null;
-                                int iconMargin = (itemView.getHeight() - editIcon.getIntrinsicHeight()) / 2;
 
                                 RectF background = new RectF(
                                         itemView.getLeft(), itemView.getTop(),
@@ -153,12 +183,14 @@ public class MainActivity extends AppCompatActivity {
                                 );
                                 c.drawRect(background, paint);
 
-                                int iconTop = itemView.getTop() + iconMargin;
-                                int iconLeft = itemView.getLeft() + iconMargin;
-                                int iconRight = itemView.getLeft() + iconMargin + editIcon.getIntrinsicWidth();
-                                int iconBottom = iconTop + editIcon.getIntrinsicHeight();
-                                editIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-                                editIcon.draw(c);
+                                paint.setColor(Color.WHITE);
+                                paint.setTextSize(40);
+                                paint.setTextAlign(Paint.Align.CENTER);
+
+                                float textX = itemView.getLeft() + (itemView.getHeight() / 2f);
+                                float textY = itemView.getTop() + (itemView.getHeight() / 2f) - ((paint.descent() + paint.ascent()) / 2);
+
+                                c.drawText("sửa", textX, textY, paint);
                             }
                         }
                     }

@@ -9,14 +9,4 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
 
-    <item
-        android:id="@+id/show_pin"
-        android:title="Đã ghim"
-        app:showAsAction="collapseActionView"/>
-
-    <item
-        android:id="@+id/show_all"
-        android:title="Tất cả"
-        app:showAsAction="collapseActionView"/>
-
 </menu>

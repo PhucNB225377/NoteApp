@@ -29,5 +29,19 @@ public class NoteViewModel extends AndroidViewModel {
     public LiveData<List<Note>> searchAllNotes(String query) { return repository.searchAllNotes(query); }
 
     public LiveData<List<Note>> searchNotesByCategory(int categoryId, String query) { return repository.searchNotesByCategory(categoryId, query); }
+
+    public LiveData<List<Note>> getAllCheckedNotes() { return repository.getAllCheckedNotes(); }
+
+    public LiveData<List<Note>> searchAllCheckedNotes(String query) { return repository.searchAllCheckedNotes(query); }
+
+    public LiveData<List<Note>> getAllPinedNotes() { return repository.getAllPinedNotes(); }
+
+    public LiveData<List<Note>> searchAllPinedNotes(String query) { return repository.searchAllPinedNotes(query); }
+
+    public LiveData<List<Note>> getAllUncheckedNotes() { return repository.getAllUncheckedNotes(); }
+
+    public LiveData<List<Note>> searchAllUncheckedNotes(String query) { return repository.searchAllUncheckedNotes(query); }
+
+    public LiveData<List<Note>> getPinedNotesByCategory(int categoryId) { return repository.getPinnedNotesByCategory(categoryId); }
 }
 

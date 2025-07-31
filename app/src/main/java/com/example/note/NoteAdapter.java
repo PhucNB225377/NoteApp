@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
     public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
         Note currentNote = notes.get(position);
         holder.textViewTitle.setText(currentNote.getTitle());
+
         if (currentNote.getReminderTimeMillis() != null) {
             holder.tvReminderTime.setVisibility(View.VISIBLE);
             holder.tvReminderTime.setText("Nhắc lúc: " + formatMillisToDateTime(currentNote.getReminderTimeMillis()));
@@ -40,6 +42,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
             else holder.tvReminderTime.setTextColor(Color.parseColor("#646464"));
         } else {
             holder.tvReminderTime.setVisibility(View.GONE);
+        }
+
+        holder.cbNote.setChecked(currentNote.getCheck() == 1);
+
+        if (currentNote.getPin() == 1) {
+            holder.pin.setColorFilter(Color.parseColor("#FFC107"));
+        } else {
+            holder.pin.setColorFilter(Color.parseColor("#AAAAAA"));
         }
     }
 
@@ -78,12 +88,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
         private final TextView textViewTitle;
         private final CheckBox cbNote;
         private final TextView tvReminderTime;
+        private final ImageView pin;
 
         public NoteHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.tvNoteTitle);
             cbNote = itemView.findViewById(R.id.cbNote);
             tvReminderTime = itemView.findViewById(R.id.tvReminderTime);
+            pin = itemView.findViewById(R.id.pin);
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -91,11 +103,27 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
                     listener.onItemClick(notes.get(position));
                 }
             });
+
+            cbNote.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onCheckClick(notes.get(position));
+                }
+            });
+
+            pin.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onPinClick(notes.get(position));
+                }
+            });
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(Note note);
+        void onCheckClick(Note note);
+        void onPinClick(Note note);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

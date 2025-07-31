@@ -18,6 +18,8 @@ public class ReminderReceiver extends BroadcastReceiver {
         int noteId = intent.getIntExtra("note_id", -1);
         String title = intent.getStringExtra("note_title");
         String content = intent.getStringExtra("note_content");
+        int categoryId = intent.getIntExtra("category_id", -1);
+        String categoryName = intent.getStringExtra("category_name");
 
         String channelId = "reminder_channel";
         String channelName = "Reminder Notifications";
@@ -30,7 +32,9 @@ public class ReminderReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        Intent clickIntent = new Intent(context, MainActivity.class);
+        Intent clickIntent = new Intent(context, NoteListActivity.class);
+        clickIntent.putExtra("category_id", categoryId);
+        clickIntent.putExtra("category_name", categoryName);
         clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         PendingIntent clickPendingIntent = PendingIntent.getActivity(context, noteId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);

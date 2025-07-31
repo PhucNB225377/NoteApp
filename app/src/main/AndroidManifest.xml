@@ -39,6 +39,30 @@
         </activity>
 
         <activity
+            android:name=".AllNotesActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".CheckedNotesActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".PinedNotesActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".UncheckedNotesActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

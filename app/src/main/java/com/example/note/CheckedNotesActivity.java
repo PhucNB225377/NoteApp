@@ -24,37 +24,30 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 import java.util.Objects;
 
-public class NoteListActivity extends AppCompatActivity {
-    NoteAdapter adapter;
+public class CheckedNotesActivity extends AppCompatActivity {
+    NoteAdapter noteAdapter;
     NoteViewModel noteViewModel;
-    int categoryId;
     int swipedPosition = -1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_list);
-
-        Intent intent1 = getIntent();
-        categoryId = intent1.getIntExtra("category_id", -1);
-        String categoryName = intent1.getStringExtra("category_name");
+        setContentView(R.layout.activity_all_note);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewNote);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        adapter = new NoteAdapter();
-        recyclerView.setAdapter(adapter);
+        noteAdapter = new NoteAdapter();
+        recyclerView.setAdapter(noteAdapter);
 
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
         TextView tvEmptyNote = findViewById(R.id.tvEmptyNote);
-        noteViewModel.getNotesByCategory(categoryId).observe(this, notes -> {
-            adapter.setNotes(notes);
+        noteViewModel.getAllCheckedNotes().observe(this, notes -> {
+            noteAdapter.setNotes(notes);
             if (notes.isEmpty()) {
                 tvEmptyNote.setVisibility(View.VISIBLE);
             } else {
@@ -62,31 +55,22 @@ public class NoteListActivity extends AppCompatActivity {
             }
         });
 
+        Intent intent = getIntent();
         Toolbar toolbar = findViewById(R.id.toolbar1);
-        toolbar.setTitle(categoryName);
+        toolbar.setTitle(intent.getStringExtra("category_name"));
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        FloatingActionButton buttonAddNote = findViewById(R.id.addNote);
-        buttonAddNote.setOnClickListener(v -> {
-            toolbar.clearFocus();
-            Intent intent = new Intent(NoteListActivity.this, NoteDetailActivity.class);
-            intent.putExtra("note_position", adapter.getItemCount());
-            intent.putExtra("category_id", categoryId);
-            startActivity(intent);
-        });
-
-        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+        noteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Note note) {
                 toolbar.clearFocus();
-                Intent intent = new Intent(NoteListActivity.this, NoteDetailActivity.class);
+                Intent intent = new Intent(CheckedNotesActivity.this, NoteDetailActivity.class);
                 intent.putExtra("note_id", note.getId());
                 intent.putExtra("note_position", note.getPosition());
                 intent.putExtra("note_title", note.getTitle());
                 intent.putExtra("note_content", note.getContent());
-                intent.putExtra("category_id", categoryId);
-                intent.putExtra("category_name", categoryName);
+                intent.putExtra("category_id", note.getCategoryId());
                 intent.putExtra("reminder_time_millis", note.getReminderTimeMillis());
                 intent.putExtra("alarm_request_code", note.getAlarmRequestCode());
                 startActivity(intent);
@@ -99,7 +83,7 @@ public class NoteListActivity extends AppCompatActivity {
                 if (note.getCheck() == 1) note.setCheck(0);
                 else note.setCheck(1);
                 noteViewModel.update(note);
-                adapter.notifyDataSetChanged();
+                noteAdapter.notifyDataSetChanged();
             }
 
             @SuppressLint("NotifyDataSetChanged")
@@ -109,7 +93,7 @@ public class NoteListActivity extends AppCompatActivity {
                 if (note.getPin() == 1) note.setPin(0);
                 else note.setPin(1);
                 noteViewModel.update(note);
-                adapter.notifyDataSetChanged();
+                noteAdapter.notifyDataSetChanged();
             }
         });
 
@@ -122,7 +106,7 @@ public class NoteListActivity extends AppCompatActivity {
                         int from = viewHolder.getAdapterPosition();
                         int to = target.getAdapterPosition();
 
-                        adapter.moveNote(from, to);
+                        noteAdapter.moveNote(from, to);
 
                         return true;
                     }
@@ -179,29 +163,28 @@ public class NoteListActivity extends AppCompatActivity {
 
                     @Override
                     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                        Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
+                        Note note = noteAdapter.getNoteAt(viewHolder.getAdapterPosition());
                         if (direction == ItemTouchHelper.LEFT) {
                             if (note.getReminderTimeMillis() != null) {
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                Intent intent = new Intent(NoteListActivity.this, ReminderReceiver.class);
+                                Intent intent = new Intent(CheckedNotesActivity.this, ReminderReceiver.class);
                                 intent.putExtra("note_id", note.getId());
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(NoteListActivity.this, note.getAlarmRequestCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(CheckedNotesActivity.this, note.getAlarmRequestCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                 alarmManager.cancel(pendingIntent);
                                 pendingIntent.cancel();
                             }
 
                             noteViewModel.delete(note);
-                            Toast.makeText(NoteListActivity.this, "Đã xóa ghi chú", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CheckedNotesActivity.this, "Đã xóa ghi chú", Toast.LENGTH_SHORT).show();
                         }
                         else if (direction == ItemTouchHelper.RIGHT) {
                             swipedPosition = viewHolder.getAdapterPosition();
-                            Intent intent = new Intent(NoteListActivity.this, NoteDetailActivity.class);
+                            Intent intent = new Intent(CheckedNotesActivity.this, NoteDetailActivity.class);
                             intent.putExtra("note_id", note.getId());
                             intent.putExtra("note_position", note.getPosition());
                             intent.putExtra("note_title", note.getTitle());
                             intent.putExtra("note_content", note.getContent());
-                            intent.putExtra("category_id", categoryId);
-                            intent.putExtra("category_name", categoryName);
+                            intent.putExtra("category_id", note.getCategoryId());
                             intent.putExtra("reminder_time_millis", note.getReminderTimeMillis());
                             intent.putExtra("alarm_request_code", note.getAlarmRequestCode());
                             startActivity(intent);
@@ -215,7 +198,7 @@ public class NoteListActivity extends AppCompatActivity {
 
                         toolbar.clearFocus();
 
-                        List<Note> currentNotes = adapter.getNotes();
+                        List<Note> currentNotes = noteAdapter.getNotes();
                         for (int i = 0; i < currentNotes.size(); i++) {
                             currentNotes.get(i).setPosition(i);
                         }
@@ -227,9 +210,7 @@ public class NoteListActivity extends AppCompatActivity {
     }
 
     public boolean onSupportNavigateUp() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        finish();
         return true;
     }
 
@@ -237,14 +218,14 @@ public class NoteListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (swipedPosition != -1) {
-            adapter.notifyItemChanged(swipedPosition);
+            noteAdapter.notifyItemChanged(swipedPosition);
             swipedPosition = -1;
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.note_list_menu, menu);
+        getMenuInflater().inflate(R.menu.note_all_menu, menu);
 
         MenuItem search = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) search.getActionView();
@@ -260,8 +241,8 @@ public class NoteListActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText != null) {
-                    noteViewModel.searchNotesByCategory(categoryId, newText).observe(NoteListActivity.this, notes -> {
-                        adapter.setNotes(notes);
+                    noteViewModel.searchAllCheckedNotes(newText).observe(CheckedNotesActivity.this, notes -> {
+                        noteAdapter.setNotes(notes);
                     });
                 }
                 return true;
@@ -269,24 +250,5 @@ public class NoteListActivity extends AppCompatActivity {
         });
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.show_pin) {
-            noteViewModel.getPinedNotesByCategory(categoryId).observe(NoteListActivity.this, notes -> {
-                adapter.setNotes(notes);
-            });
-            return true;
-        } else if (itemId == R.id.show_all) {
-            noteViewModel.getNotesByCategory(categoryId).observe(NoteListActivity.this, notes -> {
-                adapter.setNotes(notes);
-            });
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
     }
 }

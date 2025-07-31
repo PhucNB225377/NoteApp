@@ -26,6 +26,8 @@ public class Note {
     @Nullable
     private Long reminderTimeMillis;
     private int alarmRequestCode;
+    private int check = 0;
+    private int pin = 0;
 
     public Note(String title, String content, int position) {
         this.title = title;
@@ -75,6 +77,20 @@ public class Note {
     }
     public void setAlarmRequestCode(int alarmRequestCode) {
         this.alarmRequestCode = alarmRequestCode;
+    }
+
+    public void setCheck(int check) {
+        this.check = check;
+    }
+    public int getCheck() {
+        return check;
+    }
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+    public int getPin() {
+        return pin;
     }
 }
 
